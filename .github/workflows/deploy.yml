@@ -1,0 +1,26 @@
+name: Test Frontend Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Permite que el workflow se ejecute manualmente
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run deployment script
+        run: echo "Desplegando..."
+
+      - name: Trigger End2End Tests Workflow
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token ${{ secrets.END2END_REPO_TOKEN }}" \
+          https://api.github.com/repos/<usuario>/test-end2end/actions/workflows/e2e.yml/dispatches \
+          -d '{"ref":"main"}'
